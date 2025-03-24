@@ -3,174 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modular STL and Image Viewer</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+    <title>STL, Image, Video, and GIF Viewer</title>
     <style>
-        body { margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        #links {
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        #header {
+            margin-bottom: 20px;
+        }
+        #content {
             display: flex;
             flex-wrap: wrap;
-            padding: 10px;
-            background: #f0f0f0;
+            gap: 20px;
         }
-        #links a {
-            margin: 10px;
-            text-decoration: none;
-            color: #333;
-        }
-        .section { margin-bottom: 20px; margin: 50px; border-radius: 12px; }
-        .viewer { width: 100%; }
-        .stl-viewer { height: 500px; }
-        .jpg-viewer { height: auto; }
-        .description {
+        .stl-viewer, .image-container, .video-container, .gif-container {
+            flex: 1 1 400px;
+            max-width: 400px;
+            border: 1px solid #ccc;
             padding: 10px;
-            background: #fafafa;
+            background: #f9f9f9;
+        }
+        .stl-viewer canvas {
+            width: 400px;
+            height: 300px;
+            display: block;
+        }
+        .image-container img, .gif-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .video-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+        }
+        p {
+            margin: 10px 0 0 0;
         }
     </style>
 </head>
 <body>
-    <div id="links"></div>
-    <div id="sections"></div>
+    <!-- Header Section -->
+    <div id="header">
+        <h1>STL, Image, Video, and GIF Gallery</h1>
+        <p>Explore 3D models, images, videos, and animations. Interact with the content using the viewers and controls. All files are hosted on the server.</p>
+    </div>
+
+    <!-- Dynamic Content Area -->
+    <div id="content">
+        <!-- Media containers will be added here -->
+    </div>
+
+    <!-- Three.js and Related Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- Main Script -->
     <script>
-    // JavaScript goes here (see below)
-	let viewers = [];
+        // Fetch and process config.txt
+        fetch('/certifictes/config.txt')
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to load config.txt');
+                return response.text();
+            })
+            .then(text => {
+                const contentDiv = document.getElementById('content');
+                const lines = text.trim().split('\n');
+                lines.forEach(line => {
+                    const parts = line.split(',');
+                    if (parts.length < 3) {
+                        console.error('Invalid line in config.txt:', line);
+                        return;
+                    }
+                    const file_path = parts[0].trim();
+                    const title = parts[1].trim();
+                    const description = parts.slice(2).join(',').trim();
+                    const extension = file_path.split('.').pop().toLowerCase();
 
-	function initSTLViewer(container, stlPath) {
-		// Set up the scene, camera, and renderer
-		const scene = new THREE.Scene();
-		const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-		camera.position.z = 5;
-		camera.position.x = 5;
-		camera.position.y = 5;
+                    if (extension === 'stl') {
+                        // STL Viewer
+                        const viewerDiv = document.createElement('div');
+                        viewerDiv.className = 'stl-viewer';
+                        const titleH3 = document.createElement('h3');
+                        titleH3.textContent = title;
+                        viewerDiv.appendChild(titleH3);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 400;
+                        canvas.height = 300;
+                        viewerDiv.appendChild(canvas);
+                        const descriptionP = document.createElement('p');
+                        descriptionP.textContent = description;
+                        viewerDiv.appendChild(descriptionP);
+                        contentDiv.appendChild(viewerDiv);
+                        initSTLViewer(canvas, file_path);
+                    } else if (extension === 'jpg') {
+                        // JPG Image
+                        const imgDiv = document.createElement('div');
+                        imgDiv.className = 'image-container';
+                        const titleH3 = document.createElement('h3');
+                        titleH3.textContent = title;
+                        imgDiv.appendChild(titleH3);
+                        const img = document.createElement('img');
+                        img.loading = 'lazy';
+                        img.src = file_path;
+                        img.alt = description;
+                        imgDiv.appendChild(img);
+                        const descriptionP = document.createElement('p');
+                        descriptionP.textContent = description;
+                        imgDiv.appendChild(descriptionP);
+                        contentDiv.appendChild(imgDiv);
+                    } else if (extension === 'mp4') {
+                        // MP4 Video
+                        const videoDiv = document.createElement('div');
+                        videoDiv.className = 'video-container';
+                        const titleH3 = document.createElement('h3');
+                        titleH3.textContent = title;
+                        videoDiv.appendChild(titleH3);
+                        const video = document.createElement('video');
+                        video.controls = true;
+                        video.loading = 'lazy';
+                        const source = document.createElement('source');
+                        source.src = file_path;
+                        source.type = 'video/mp4';
+                        video.appendChild(source);
+                        video.appendChild(document.createTextNode('Your browser does not support the video tag.'));
+                        videoDiv.appendChild(video);
+                        const descriptionP = document.createElement('p');
+                        descriptionP.textContent = description;
+                        videoDiv.appendChild(descriptionP);
+                        contentDiv.appendChild(videoDiv);
+                    } else if (extension === 'gif') {
+                        // GIF Image
+                        const gifDiv = document.createElement('div');
+                        gifDiv.className = 'gif-container';
+                        const titleH3 = document.createElement('h3');
+                        titleH3.textContent = title;
+                        gifDiv.appendChild(titleH3);
+                        const img = document.createElement('img');
+                        img.loading = 'lazy';
+                        img.src = file_path;
+                        img.alt = description;
+                        gifDiv.appendChild(img);
+                        const descriptionP = document.createElement('p');
+                        descriptionP.textContent = description;
+                        gifDiv.appendChild(descriptionP);
+                        contentDiv.appendChild(gifDiv);
+                    }
+                    // Unsupported file types are ignored
+                });
+            })
+            .catch(error => console.error('Error:', error));
 
-		const renderer = new THREE.WebGLRenderer({ antialias: true });
-		renderer.setSize(container.clientWidth, container.clientHeight);
-		container.appendChild(renderer.domElement);
+        // Initialize STL Viewer with Three.js
+        function initSTLViewer(canvas, stlPath) {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas });
+            renderer.setSize(canvas.width, canvas.height);
 
-		// Add orbit controls for interaction (pan, zoom, rotate)
-		const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            const light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(1, 1, 1).normalize();
+            scene.add(light);
+            const ambientLight = new THREE.AmbientLight(0x404040);
+            scene.add(ambientLight);
 
-		// Add lighting
-		const light = new THREE.AmbientLight(0x404040);
-		scene.add(light);
-		const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-		const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
-		directionalLight.position.set(0, 1, 0);
-		directionalLight2.position.set(-1, -1, 2);
-		scene.add(directionalLight);
-		scene.add(directionalLight2);
+            const loader = new THREE.STLLoader();
+            loader.load(stlPath, geometry => {
+                const material = new THREE.MeshPhongMaterial({ color: 0xaaaaaa });
+                const mesh = new THREE.Mesh(geometry, material);
+                scene.add(mesh);
 
-		// Load the STL file
-		const loader = new THREE.STLLoader();
-		loader.load(stlPath, function (geometry) {
-			const material = new THREE.MeshPhongMaterial({ color: 0xff5533, specular: 0x111111, shininess: 200 });
-			const mesh = new THREE.Mesh(geometry, material);
-			scene.add(mesh);
+                const box = new THREE.Box3().setFromObject(mesh);
+                const size = box.getSize(new THREE.Vector3()).length();
+                const center = box.getCenter(new THREE.Vector3());
+                camera.position.copy(center);
+                camera.position.z += size * 1.5;
+                camera.lookAt(center);
+            }, undefined, error => console.error('STL Load Error:', error));
 
-			// Center the model and adjust camera
-			const box = new THREE.Box3().setFromObject(mesh);
-			const size = box.getSize(new THREE.Vector3()).length();
-			const center = box.getCenter(new THREE.Vector3());
-			mesh.position.sub(center);  // Center the mesh
-			camera.position.copy(center).add(new THREE.Vector3( 0, -(size), size));
-			controls.target.copy(center);
-			controls.update();
-		});
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.25;
+            controls.enableZoom = true;
+            controls.enablePan = true;
 
-		// Store viewer details for animation and resizing
-		viewers.push({ container, scene, camera, renderer, controls });
-	}
-
-	function animate() {
-		requestAnimationFrame(animate);
-		viewers.forEach(viewer => {
-			viewer.controls.update();
-			viewer.renderer.render(viewer.scene, viewer.camera);
-		});
-	}
-
-	window.addEventListener('resize', function () {
-		viewers.forEach(viewer => {
-			const container = viewer.container;
-			const width = container.clientWidth;
-			const height = container.clientHeight;
-			viewer.renderer.setSize(width, height);
-			viewer.camera.aspect = width / height;
-			viewer.camera.updateProjectionMatrix();
-		});
-	});
-
-	// Fetch and parse the .txt file
-	fetch('resumeWebsite/stls/models.txt')
-		.then(response => response.text())
-		.then(data => {
-			const lines = data.split('\n');
-			let stlViewerData = []; // Store STL viewer info for later initialization
-			
-			lines.forEach((line, index) => {
-				const parts = line.split('|');
-				if (parts.length >= 4) {
-					const type = parts[0].trim().toUpperCase();
-					const title = parts[1].trim();
-					const path = parts[2].trim();
-					const description = parts[3].trim();
-
-					// Create navigation link
-					const a = document.createElement('a');
-					a.href = `#section-${index}`;
-					a.textContent = title;
-					document.getElementById('links').appendChild(a);
-
-					// Create section
-					const section = document.createElement('div');
-					section.id = `section-${index}`;
-					section.className = 'section';
-
-					// Add title
-					const h2 = document.createElement('h2');
-					h2.textContent = title;
-					section.appendChild(h2);
-
-					// Create viewer div
-					const viewerDiv = document.createElement('div');
-					viewerDiv.className = `viewer ${type.toLowerCase()}-viewer`;
-					section.appendChild(viewerDiv);
-
-					// Initialize based on type
-					if (type === 'STL') {
-						// Defer STL viewer initialization
-						stlViewerData.push({ container: viewerDiv, path: path });
-					} else if (type === 'JPG') {
-						const img = document.createElement('img');
-						img.src = path;
-						img.style.width = '100%';
-						img.style.height = 'auto';
-						viewerDiv.appendChild(img);
-					}
-
-					// Add description
-					const descDiv = document.createElement('div');
-					descDiv.className = 'description';
-					descDiv.innerHTML = description;
-					section.appendChild(descDiv);
-
-					document.getElementById('sections').appendChild(section);
-				}
-			});
-			
-			requestAnimationFrame(() => {
-				stlViewerData.forEach(data => {
-					initSTLViewer(data.container, data.path);
-				});
-            animate(); // Start the rendering loop
-			});
-		})
-		.catch(error => {
-			console.error('Error loading models.txt:', error);
-		});
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
     </script>
 </body>
 </html>
