@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modular STL and Image Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        #links {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 10px;
+            background: #f0f0f0;
+        }
+        #links a {
+            margin: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+        .section { margin-bottom: 20px; margin: 50px; border-radius: 12px; }
+        .viewer { width: 100%; }
+        .stl-viewer { height: 500px; }
+        .jpg-viewer { height: auto; }
+        .description {
+            padding: 10px;
+            background: #fafafa;
+        }
+    </style>
+</head>
+<body>
+    <div id="links"></div>
+    <div id="sections"></div>
+    <script>
+    // JavaScript goes here (see below)
+	let viewers = [];
+
+	function initSTLViewer(container, stlPath) {
+		// Set up the scene, camera, and renderer
+		const scene = new THREE.Scene();
+		const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+		camera.position.z = 5;
+		camera.position.x = 5;
+		camera.position.y = 5;
+
+		const renderer = new THREE.WebGLRenderer({ antialias: true });
+		renderer.setSize(container.clientWidth, container.clientHeight);
+		container.appendChild(renderer.domElement);
+
+		// Add orbit controls for interaction (pan, zoom, rotate)
+		const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+		// Add lighting
+		const light = new THREE.AmbientLight(0x404040);
+		scene.add(light);
+		const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+		const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+		directionalLight.position.set(0, 1, 0);
+		directionalLight2.position.set(-1, -1, 2);
+		scene.add(directionalLight);
+		scene.add(directionalLight2);
+
+		// Load the STL file
+		const loader = new THREE.STLLoader();
+		loader.load(stlPath, function (geometry) {
+			const material = new THREE.MeshPhongMaterial({ color: 0xff5533, specular: 0x111111, shininess: 200 });
+			const mesh = new THREE.Mesh(geometry, material);
+			scene.add(mesh);
+
+			// Center the model and adjust camera
+			const box = new THREE.Box3().setFromObject(mesh);
+			const size = box.getSize(new THREE.Vector3()).length();
+			const center = box.getCenter(new THREE.Vector3());
+			mesh.position.sub(center);  // Center the mesh
+			camera.position.copy(center).add(new THREE.Vector3( 0, -(size), size));
+			controls.target.copy(center);
+			controls.update();
+		});
+
+		// Store viewer details for animation and resizing
+		viewers.push({ container, scene, camera, renderer, controls });
+	}
+
+	function animate() {
+		requestAnimationFrame(animate);
+		viewers.forEach(viewer => {
+			viewer.controls.update();
+			viewer.renderer.render(viewer.scene, viewer.camera);
+		});
+	}
+
+	window.addEventListener('resize', function () {
+		viewers.forEach(viewer => {
+			const container = viewer.container;
+			const width = container.clientWidth;
+			const height = container.clientHeight;
+			viewer.renderer.setSize(width, height);
+			viewer.camera.aspect = width / height;
+			viewer.camera.updateProjectionMatrix();
+		});
+	});
+
+	// Fetch and parse the .txt file
+	fetch('/certificates/MastercamSkills.txt')
+		.then(response => response.text())
+		.then(data => {
+			const lines = data.split('\n');
+			let stlViewerData = []; // Store STL viewer info for later initialization
+			
+			lines.forEach((line, index) => {
+				const parts = line.split('|');
+				if (parts.length >= 4) {
+					const type = parts[0].trim().toUpperCase();
+					const title = parts[1].trim();
+					const path = parts[2].trim();
+					const description = parts[3].trim();
+
+					// Create navigation link
+					const a = document.createElement('a');
+					a.href = `#section-${index}`;
+					a.textContent = title;
+					document.getElementById('links').appendChild(a);
+
+					// Create section
+					const section = document.createElement('div');
+					section.id = `section-${index}`;
+					section.className = 'section';
+
+					// Add title
+					const h2 = document.createElement('h2');
+					h2.textContent = title;
+					section.appendChild(h2);
+
+					// Create viewer div
+					const viewerDiv = document.createElement('div');
+					viewerDiv.className = `viewer ${type.toLowerCase()}-viewer`;
+					section.appendChild(viewerDiv);
+
+					// Initialize based on type
+					if (type === 'STL') {
+						// Defer STL viewer initialization
+						stlViewerData.push({ container: viewerDiv, path: path });
+					} else if (type === 'JPG') {
+						const img = document.createElement('img');
+						img.src = path;
+						img.style.width = '100%';
+						img.style.height = 'auto';
+						viewerDiv.appendChild(img);
+					}
+
+					// Add description
+					const descDiv = document.createElement('div');
+					descDiv.className = 'description';
+					descDiv.innerHTML = description;
+					section.appendChild(descDiv);
+
+					document.getElementById('sections').appendChild(section);
+				}
+			});
+			
+			requestAnimationFrame(() => {
+				stlViewerData.forEach(data => {
+					initSTLViewer(data.container, data.path);
+				});
+            animate(); // Start the rendering loop
+			});
+		})
+		.catch(error => {
+			console.error('Error loading models.txt:', error);
+		});
+    </script>
+</body>
+</html>

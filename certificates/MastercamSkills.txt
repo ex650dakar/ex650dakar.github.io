@@ -1,0 +1,2 @@
+STL| 	3D Block|mastercamSkills/3dBlock.stl|This is an example of changing the coordinate plane and work plane for 5 axis operations
+STL| 	Weld Prep Surface|mastercamSkills/weldPrepSurface.stl|This is an example of engraving in the 5 axis.
