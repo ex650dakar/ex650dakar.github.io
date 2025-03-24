@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jonathan Sloan's Resume</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Background Slideshow */
+        .slideshow {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .slideshow img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: slideShow 20s infinite;
+        }
+
+        .slideshow img:nth-child(2) { animation-delay: 5s; }
+        .slideshow img:nth-child(3) { animation-delay: 10s; }
+        .slideshow img:nth-child(4) { animation-delay: 15s; }
+
+        @keyframes slideShow {
+            0% { opacity: 0; }
+            5% { opacity: 1; }
+            25% { opacity: 1; }
+            30% { opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        /* Main Content */
+        .container {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #2c3e50;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #7f8c8d;
+        } 
+
+		.header p2 {
+            font-size: 1.em;
+            color: #7393bd;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .item {
+            margin-bottom: 20px;
+        }
+
+        .item h3 {
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .contact {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+        }
+		
+		
+		<!-- 2nd mod -->
+		/* Style the summary to indicate it’s clickable */
+		details summary {
+			cursor: pointer;
+			list-style: none; /* Removes default arrow in some browsers */
+		}
+
+		/* Hide default marker in WebKit browsers */
+		details summary::-webkit-details-marker {
+			display: none;
+		}
+
+		/* Add a custom arrow before the summary */
+		details summary::before {
+			content: '▶'; /* Right-pointing arrow when closed */
+			margin-right: 5px;
+			color: #3498db; /* Adjust to match your site’s accent color */
+		}
+
+		/* Change arrow when expanded */
+		details[open] summary::before {
+			content: '▼'; /* Down-pointing arrow when open */
+		}
+
+		/* Style the expanded content */
+		details p {
+			margin-top: 10px;
+			color: #3498db; /* Subtle text color */
+		}
+
+		/* Style the link */
+		details a {
+			display: inline-block;
+			margin-top: 10px;
+			color: #3498db; /* Matches arrow color */
+			text-decoration: none;
+		}
+
+		details a:hover {
+			text-decoration: underline;
+		}
+		
+		
+		//Claude indeed link modifications
+		
+		// For indeed link, custom implementation
+		.indeed-icon {
+			display: inline-block;
+			width: 16px;
+			height: 16px;
+			background-color: #003A9B; /* Indeed blue */
+			color: white;
+			font-weight: bold;
+			text-align: center;
+			line-height: 16px;
+			font-size: 10px;
+			border-radius: 3px;
+		}
+		
+		/* Remove underline from the social link */
+		.social-link {
+		  text-decoration: none;
+		  color: inherit;
+		}
+		.cta-button {
+		  text-decoration: none;
+		  color: inherit;
+		}
+		/* Optional hover effect */
+		.cta-button:hover {
+			background-color: #0055CC; /* Slightly lighter blue on hover */
+		}
+		.social-link:hover {
+			background-color: #0055CC; /* Slightly lighter blue on hover */
+		}
+    </style>
+</head>
+<body>
+    <div class="slideshow">
+        <img src="/pictures/basicMastercam.jpg" alt="Basic Mastercam">
+        <img src="/pictures/cmmZeiss.jpg" alt="Zeiss Calypso">
+        <img src="/pictures/cncTraining.jpg" alt="Intro CNC Training">
+        <img src="/pictures/calPolyPlastics.jpg" alt="Plastics Engineering Technology">
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Jonathan Sloan</h1>
+            <p>Manufacturing Technology and Computer Science Student | Portfolio</p>
+			<p2>Building with integrity, passion, and precision</p2>
+        </div>
+
+        <div class="section">
+            <h2>About Me</h2>
+            <p style="text-indent: 30px;">I am training to be a machinist while pursuing its further integration with technology. I've been working in industry since 2019, starting on a manual mill, squaring brass, bronze and aluminum to prep for CNC engraving. I enjoy being analytical and implementing ideas.</p>
+            <p style="text-indent: 30px;">I started my computer science journey in winter of 2023/2024. I've followed computer hardware news for the longest time, and when I wanted to further understand the logic behind g-code, I chose the lowest level language I could find: C.</p>
+            <p></p>
+        </div>
+
+        <div class="section">
+            <h2>Work Experience</h2>
+            <div class="item">
+                <h3>Machinist Apprentice - CACO Pacific Corporation - ISO 9001</h3>
+                <p>February 2022 - October 2024</p>
+                <p></p>
+				<p style="text-indent: 30px;">Setup, operation, 1st article inspection at:</p>
+				<p style="text-indent: 60px;">Manual Mill and Manual Lathe with EZ-track system</p>
+				<p style="text-indent: 60px;">Okuma, Mori Seiki, and Hardinge CNC Lathes</p>
+				<p style="text-indent: 60px;">Mag Fadal and pre-MAG Fadal CNC Mill</p>
+				<p style="text-indent: 30px;">Manual Surface Grinding:</p>				
+				<p style="text-indent: 60px;">Holding +0/-.0002" +0/-0.005 mm over 3" by 5" on heat treated 420ss</p>
+				<p style="text-indent: 60px;">Squaring 3" by 2" by 8" to within .0002" TIR</p>
+
+				<p style="text-indent: 30px;">Operation, 1st article inspection, limited setup at:</p>
+				<p style="text-indent: 60px;">Mitsui Seiki VL30 (w/wo 5-axis) with Renishaw probing system and shrink-fit tool holders</p>
+            </div>
+            <div class="item">
+                <h3>General Machinist - BrandNew Inc.</h3>
+                <p>November 2019 - May 2021</p>
+                <p></p>
+                <p style="text-indent: 30px;">Milling brass, bronze, and aluminum, lathing steel tubing, bronze and brass rod, wooden handles.</p>
+                <p style="text-indent: 30px;">Set up, operation, and maintenance on 3 “MicroMills”</p>
+			</div>
+        </div>
+
+        <!--div class="section">
+            <h2>Certificates</h2>
+            <div class="item">
+                <h3>Zeiss Calypso Coordinate Measuring Training</h3>
+                <p>NTMA MCC Santa Fe Springs - February 3, 2024</p>
+            </div>
+            <div class="item">
+                <h3>Basic Mastercam Programming Training</h3>
+                <p>NTMA MCC Santa Fe Springs - June 25, 2022</p>
+            </div>            
+			<div class="item">
+                <h3>Certificate Program in Plastics Engineering Technology</h3>
+                <p>Cal Poly Pomona - College of Professional and Global Education - November 2022</p>
+            </div>
+			<div class="item">
+                <h3>CNC Machining Training</h3>
+                <p>NTMA MCC Santa Fe Springs - November 23, 2021</p>
+            </div>	           
+			<h2>Certificates with Application Submitted</h2>
+            <div class="item">
+                <h3>Hexagon Metrology Mini Certificate</h3>
+                <p>Fullerton College</p>
+            </div>		
+            <div class="item">
+                <h3>Mastercam Certificate</h3>
+                <p>Fullerton College</p>
+            </div>			
+			
+            <!-- Add more certificates as needed -->
+        <!--/div-->
+		
+		<div class="section">
+			<h2>Pending Certificates</h2>
+			<div class="item">
+				<details>
+					<summary>
+						<h3>Mastercam Skills</h3>
+						<p>Machine Technology - Fullerton College - Fall 2024</p>
+					</summary>
+					<p style="color: #3c3c3c;">For projects completed, click <a href="certificates/MasterCamSkillsModular.html">here.</a></p>
+					
+					<p style="color: #3c3c3c;">Also completed Mastercam Lathe course.</p>
+					<img src="/pictures/mastercamSkills.jpg" alt="Mastercam Skills" style="width: 100%; height: auto;">
+					<!--a href="link-to-certificate.pdf" target="_blank">View Certificate</a-->
+				</details>
+			</div>
+			<div class="item">
+				<details>
+					<summary>
+						<h3>Metrology Mini Skills</h3>
+						<p>Technology and Engineering - Fullerton College - Fall 2024</p>
+					</summary>
+					<p style="color: #3c3c3c;">For projects completed, click here</p>
+					<img src="/pictures/metrologyMiniSkills.jpg" alt="Metrology Mini Skills" style="width: 100%; height: auto;">
+					<!--a href="link-to-certificate.pdf" target="_blank">View Certificate</a-->
+				</details>
+			</div>
+			<h2>Certificates</h2>
+			<div class="item">
+				<details>
+					<summary>
+						<h3>Zeiss Calypso Coordinate Measuring Training</h3>
+						<p>NTMA MCC Santa Fe Springs - February 3, 2024</p>
+					</summary>
+					<p style="color: #3c3c3c;">Taught to program both from a print and based off a step file. </p>
+					<img src="/pictures/cmmZeiss.jpg" alt="Zeiss Calypso" style="width: 100%; height: auto;">
+					<!--a href="link-to-certificate.pdf" target="_blank">View Certificate</a-->
+				</details>
+			</div>
+			<div class="item">
+				<details>
+					<summary>
+						<h3>Basic Mastercam Programming Training</h3>
+						<p>NTMA MCC Santa Fe Springs - June 25, 2022</p>
+					</summary>
+					<p style="color: #3c3c3c;">Uses standard CamInstructor material, with some other projects as well.</p>
+					<img src="/pictures/basicMastercam.jpg" alt="Basic Mastercam" style="width: 100%; height: auto;">
+					<!--a href="link-to-certificate.pdf" target="_blank">View Certificate</a-->
+				</details>
+			</div>
+			<div class="item">
+				<details>
+					<summary>
+						<h3>Certificate Program in Plastics Engineering Technology</h3>
+						<p>College of Professional and Global Education - Cal Poly Pomona - November 2022</p>
+					</summary>
+					<p style="color: #3c3c3c;">Useful in the plastic injection molding industry. This is one of the plastics technology courses on the west coast.</p>
+					<img src="/pictures/calPolyPlastics.jpg" alt="Plastics Engineering Technology" style="width: 100%; height: auto;">
+					<!--a href="link-to-certificate.pdf" target="_blank">View Certificate</a-->
+				</details>
+			</div>		
+			<div class="item">
+				<details>
+					<summary>
+						<h3>CNC Machining Training</h3>
+						<p>NTMA MCC Santa Fe Springs - November 23, 2021</p>
+					</summary>
+					<p style="color: #3c3c3c;">Introductory CNC machining. The one that started it all!</p>
+					<img src="/pictures/basicMastercam.jpg" alt="Basic Mastercam" style="width: 100%; height: auto;">
+					<!--a href="link-to-certificate.pdf" target="_blank">View Certificate</a-->
+				</details>
+			</div>				
+			<!-- Add more certificates as needed -->
+		</div>
+        
+		<div class="section">
+            <h2>Education</h2>
+            <div class="item">
+                <h3>Current Classes</h3>
+                <p>Fullerton College</p>
+                <p>MACH 116F - Machine Tools</p>
+                <p>DRAF 171F - Fundamentals of Drafting</p>
+                <p>MATH 152  - Calculus II</p>
+                <p>CSCI 123  - Data Structures in C++</p>
+            </div>
+            <div class="item">
+                <h3>Previous Classes</h3>
+                <p>Institution Name - Date Range</p>
+                <p>List relevant courses</p>
+            </div>
+        </div>
+
+        <div class="contact">
+            <h2>Contact</h2>
+            <p>Email: billyjonsloan@gmail.com</p>
+            <a href="mailto:billyjonsloan@gmail.com" class="cta-button">Contact Me</a>
+            <div class="social-links">
+                <a href="https://profile.indeed.com/p/jonathans-cc72mg4" class="social-link">
+					<span class="indeed-icon">Indeed</span>
+				</a>
+				<!-- a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a-->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
