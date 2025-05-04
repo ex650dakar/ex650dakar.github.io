@@ -3,204 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lab 5</title>
+    <title>Metrology Mini Skills</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-        #header {
+        .file-entry {
             margin-bottom: 20px;
-        }
-        #content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .stl-viewer, .image-container, .video-container, .gif-container {
-            flex: 1 1 400px;
-            max-width: 400px;
-            border: 1px solid #ccc;
             padding: 10px;
-            background: #f9f9f9;
+            border: 1px solid #ccc;
         }
-        .stl-viewer canvas {
-            width: 400px;
-            height: 300px;
-            display: block;
+        .viewer {
+            text-align: center;
+            margin-bottom: 10px;
         }
-        .image-container img, .gif-container img {
-            width: 100%;
+        .viewer img, .viewer video, .viewer iframe {
+            max-width: 100%;
             height: auto;
-            display: block;
         }
-        .video-container video {
+        .viewer iframe {
             width: 100%;
-            height: auto;
-            display: block;
+            height: 600px;
+            border: none;
         }
-        h3 {
-            margin: 0 0 10px 0;
-            font-size: 18px;
+        .viewer video {
+            width: 100%;
+            max-width: 800px;
         }
-        p {
-            margin: 10px 0 0 0;
+        .viewer div.stl-viewer {
+            width: 100%;
+            height: 400px;
+            margin: 0 auto;
+        }
+        .descriptions p {
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <div id="header">
-        <h1>Metrology Mini Skills</h1>
-        <p>One of the labs from the CMM/Romer arm course</p>
-    </div>
-
-    <!-- Dynamic Content Area -->
-    <div id="content">
-        <!-- Media containers will be added here -->
-    </div>
-
-    <!-- Three.js and Related Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-
-    <!-- Main Script -->
+    <div id="container"></div>
+    <!-- Using a CDN for STL Viewer; replace with actual path if local -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stl-viewer@0.0.2/dist/stl-viewer.min.js"></script>
     <script>
-        // Fetch and process config.txt
-        fetch('/certificates/MetrologyMiniSkills.txt')
-            .then(response => {
-                if (!response.ok) throw new Error('Failed to load config.txt');
-                return response.text();
-            })
-            .then(text => {
-                const contentDiv = document.getElementById('content');
-                const lines = text.trim().split('\n');
-                lines.forEach(line => {
-                    const parts = line.split(',');
-                    if (parts.length < 3) {
-                        console.error('Invalid line in config.txt:', line);
-                        return;
-                    }
-                    const file_path = parts[0].trim();
-                    const title = parts[1].trim();
-                    const description = parts.slice(2).join(',').trim();
-                    const extension = file_path.split('.').pop().toLowerCase();
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/certificates/MetrologyMiniSkills.txt')
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to load files.txt');
+                    return response.text();
+                })
+                .then(text => {
+                    const entries = parseEntries(text);
+                    const html = entries.map((entry, index) => {
+                        const viewerHTML = getViewerHTML(entry.type, entry.address, index);
+                        return `
+                            <div class="file-entry">
+                                <h2>${entry.description}</h2>
+                                <div class="viewer">${viewerHTML}</div>
+                                <div class="descriptions">
+                                    <p><strong>In-depth Description:</strong> ${entry.inDepthDescription}</p>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    document.getElementById('container').innerHTML = html;
 
-                    if (extension === 'stl') {
-                        // STL Viewer
-                        const viewerDiv = document.createElement('div');
-                        viewerDiv.className = 'stl-viewer';
-                        const titleH3 = document.createElement('h3');
-                        titleH3.textContent = title;
-                        viewerDiv.appendChild(titleH3);
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 400;
-                        canvas.height = 300;
-                        viewerDiv.appendChild(canvas);
-                        const descriptionP = document.createElement('p');
-                        descriptionP.textContent = description;
-                        viewerDiv.appendChild(descriptionP);
-                        contentDiv.appendChild(viewerDiv);
-                        initSTLViewer(canvas, file_path);
-                    } else if (extension === 'jpg') {
-                        // JPG Image
-                        const imgDiv = document.createElement('div');
-                        imgDiv.className = 'image-container';
-                        const titleH3 = document.createElement('h3');
-                        titleH3.textContent = title;
-                        imgDiv.appendChild(titleH3);
-                        const img = document.createElement('img');
-                        img.loading = 'lazy';
-                        img.src = file_path;
-                        img.alt = description;
-                        imgDiv.appendChild(img);
-                        const descriptionP = document.createElement('p');
-                        descriptionP.textContent = description;
-                        imgDiv.appendChild(descriptionP);
-                        contentDiv.appendChild(imgDiv);
-                    } else if (extension === 'mp4') {
-                        // MP4 Video
-                        const videoDiv = document.createElement('div');
-                        videoDiv.className = 'video-container';
-                        const titleH3 = document.createElement('h3');
-                        titleH3.textContent = title;
-                        videoDiv.appendChild(titleH3);
-                        const video = document.createElement('video');
-                        video.controls = true;
-                        video.loading = 'lazy';
-                        const source = document.createElement('source');
-                        source.src = file_path;
-                        source.type = 'video/mp4';
-                        video.appendChild(source);
-                        video.appendChild(document.createTextNode('Your browser does not support the video tag.'));
-                        videoDiv.appendChild(video);
-                        const descriptionP = document.createElement('p');
-                        descriptionP.textContent = description;
-                        videoDiv.appendChild(descriptionP);
-                        contentDiv.appendChild(videoDiv);
-                    } else if (extension === 'gif') {
-                        // GIF Image
-                        const gifDiv = document.createElement('div');
-                        gifDiv.className = 'gif-container';
-                        const titleH3 = document.createElement('h3');
-                        titleH3.textContent = title;
-                        gifDiv.appendChild(titleH3);
-                        const img = document.createElement('img');
-                        img.loading = 'lazy';
-                        img.src = file_path;
-                        img.alt = description;
-                        gifDiv.appendChild(img);
-                        const descriptionP = document.createElement('p');
-                        descriptionP.textContent = description;
-                        gifDiv.appendChild(descriptionP);
-                        contentDiv.appendChild(gifDiv);
-                    }
-                    // Unsupported file types are ignored
+                    // Initialize STL viewers
+                    entries.forEach((entry, index) => {
+                        if (entry.type.toLowerCase() === 'stl') {
+                            const container = document.getElementById(`stl-viewer-${index}`);
+                            new STLViewer(container, { models: [{ file: entry.address }] });
+                        }
+                    });
+                })
+                .catch(error => {
+                    document.getElementById('container').innerHTML = `<p>Error: ${error.message}</p>`;
                 });
-            })
-            .catch(error => console.error('Error:', error));
+        });
 
-        // Initialize STL Viewer with Three.js
-        function initSTLViewer(canvas, stlPath) {
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas: canvas });
-            renderer.setSize(canvas.width, canvas.height);
+        function parseEntries(text) {
+            const entryTexts = text.split('---').map(t => t.trim()).filter(t => t);
+            return entryTexts.map(entryText => {
+                const lines = entryText.split('\n').map(line => line.trim()).filter(line => line);
+                const entry = {};
+                lines.forEach(line => {
+                    const [key, ...valueParts] = line.split(':');
+                    const value = valueParts.join(':').trim();
+                    if (key === 'type') entry.type = value;
+                    else if (key === 'description') entry.description = value;
+                    else if (key === 'address') entry.address = value;
+                    else if (key === 'in-depth') entry.inDepthDescription = value;
+                });
+                return entry;
+            });
+        }
 
-            const light = new THREE.DirectionalLight(0xffffff, 1);
-            light.position.set(1, 1, 1).normalize();
-            scene.add(light);
-            const ambientLight = new THREE.AmbientLight(0x404040);
-            scene.add(ambientLight);
+        const renderers = {
+            'jpg': (address) => `<img src="${address}" alt="Image">`,
+            'png': (address) => `<img src="${address}" alt="Image">`,
+            'mp4': (address) => `<video src="${address}" controls></video>`,
+            'pdf': (address) => `<iframe src="${address}"></iframe>`,
+            'stl': (address, index) => `<div id="stl-viewer-${index}" class="stl-viewer"></div>`
+        };
 
-            const loader = new THREE.STLLoader();
-            loader.load(stlPath, geometry => {
-                const material = new THREE.MeshPhongMaterial({ color: 0xaaaaaa });
-                const mesh = new THREE.Mesh(geometry, material);
-                scene.add(mesh);
-
-                const box = new THREE.Box3().setFromObject(mesh);
-                const size = box.getSize(new THREE.Vector3()).length();
-                const center = box.getCenter(new THREE.Vector3());
-                camera.position.copy(center);
-                camera.position.z += size * 1.5;
-                camera.lookAt(center);
-            }, undefined, error => console.error('STL Load Error:', error));
-
-            const controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.25;
-            controls.enableZoom = true;
-            controls.enablePan = true;
-
-            function animate() {
-                requestAnimationFrame(animate);
-                controls.update();
-                renderer.render(scene, camera);
-            }
-            animate();
+        function getViewerHTML(type, address, index) {
+            const renderer = renderers[type.toLowerCase()];
+            return renderer ? renderer(address, index) : `<p>Unsupported file type: ${type}</p>`;
         }
     </script>
 </body>
