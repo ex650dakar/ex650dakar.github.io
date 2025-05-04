@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STL, Image, Video, and GIF Viewer</title>
+    <title>Lab 5</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -52,8 +52,8 @@
 <body>
     <!-- Header Section -->
     <div id="header">
-        <h1>STL, Image, Video, and GIF Gallery</h1>
-        <p>Explore 3D models, images, videos, and animations. Interact with the content using the viewers and controls. All files are hosted on the server.</p>
+        <h1>Metrology Mini Skills</h1>
+        <p>One of the labs from the CMM/Romer arm course</p>
     </div>
 
     <!-- Dynamic Content Area -->
@@ -69,7 +69,7 @@
     <!-- Main Script -->
     <script>
         // Fetch and process config.txt
-        fetch('/certifictes/config.txt')
+        fetch('/certifictes/MetrologyMiniSkills.txt')
             .then(response => {
                 if (!response.ok) throw new Error('Failed to load config.txt');
                 return response.text();
