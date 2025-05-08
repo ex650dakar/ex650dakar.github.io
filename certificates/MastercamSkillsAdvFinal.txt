@@ -1,0 +1,15 @@
+type: STL
+description: Advanced MasterCam Final
+address: mastercamSkills/advMasterCamFinalSolids.stl
+in-depth: This project was the final for the Advanced MasterCam class at Fullerton. For roughing, I used a 1 inch endmill with .25 inch radius. The rougher had a 25% stepover and a 10% stepup, meaning .25 inches stepover and .10 inches stepup. The part was left with .050 of stock for the finish tool.
+---
+type: png
+description: Tolerance Comparison from Simulator
+address: pictures/advMastercamFinalCompare.png
+in-depth: One of the questions that I had during class was how do I program to different tolerances? I would have been asking that question in fall of 2023, and my understanding now is that it’s a super complicated question to answer since there are many variables including the machine, the tooling, the budget, the operators, the geometry of the part, the material of the part, how soon the part is due, how quickly processes can be tested and verified, etc. The trump card could also be, is a CNC mill the best tool to complete said dimension? And that opens up another round of questions.
+---
+type: mp4
+description: Simulation of the Toolpaths
+address: pictures/recordingForFinal.mp4
+in-depth: 
+The finishing tool presented a unique issue in the small internal radius of the part. When completing the assignment, I used a 7/16 ball endmill for the entire finishing operation. This is where understanding the tolerance callout of the part would make a huge difference in how the final operation was programmed. (We were given prints that show the geometry but not any tolerance, or we were given step files, also without tolerances.) The entire finishing operation was 3 toolpaths for the finish tool, totaling over an hour of runtime.  Had I chosen to break the toolpath up and use another 1 inch .25 rad endmill to finish the majority of the part, then use the 7/16 ball to do the flowline, the runtime could have been significantly reduced. 

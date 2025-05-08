@@ -1,2 +1,1 @@
-STL| 	3D Block|mastercamSkills/3dBlock.stl|This is an example of changing the coordinate plane and work plane for 5 axis operations
-STL| 	Weld Prep Surface|mastercamSkills/weldPrepSurface.stl|This is an example of engraving in the 5 axis.
+STL| 	3D Block|mastercamSkills/3dBlock.stl|The 3D block is a simple exercise for understanding how the axis work when doing 5 axis programming in MasterCam. Technically, this is a 3+2 axis program since the angle of the tool does not change relative to each face while engraving. 

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metrology Mini Skills</title>
+    <style>
+        .file-entry {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .viewer {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .viewer img, .viewer video, .viewer iframe {
+            max-width: 100%;
+            height: auto;
+        }
+        .viewer iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        .viewer video {
+            width: 100%;
+            max-width: 800px;
+        }
+        .viewer div.stl-viewer {
+            width: 100%;
+            height: 400px;
+            margin: 0 auto;
+        }
+        .descriptions p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <!-- Using a CDN for STL Viewer; replace with actual path if local -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stl-viewer@0.0.2/dist/stl-viewer.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/certificates/MetrologyMiniSkills.txt')
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to load files.txt');
+                    return response.text();
+                })
+                .then(text => {
+                    const entries = parseEntries(text);
+                    const html = entries.map((entry, index) => {
+                        const viewerHTML = getViewerHTML(entry.type, entry.address, index);
+                        return `
+                            <div class="file-entry">
+                                <h2>${entry.description}</h2>
+                                <div class="viewer">${viewerHTML}</div>
+                                <div class="descriptions">
+                                    <p><strong>In-depth Description:</strong> ${entry.inDepthDescription}</p>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    document.getElementById('container').innerHTML = html;
+
+                    // Initialize STL viewers
+                    entries.forEach((entry, index) => {
+                        if (entry.type.toLowerCase() === 'stl') {
+                            const container = document.getElementById(`stl-viewer-${index}`);
+                            new STLViewer(container, { models: [{ file: entry.address }] });
+                        }
+                    });
+                })
+                .catch(error => {
+                    document.getElementById('container').innerHTML = `<p>Error: ${error.message}</p>`;
+                });
+        });
+
+        function parseEntries(text) {
+            const entryTexts = text.split('---').map(t => t.trim()).filter(t => t);
+            return entryTexts.map(entryText => {
+                const lines = entryText.split('\n').map(line => line.trim()).filter(line => line);
+                const entry = {};
+                lines.forEach(line => {
+                    const [key, ...valueParts] = line.split(':');
+                    const value = valueParts.join(':').trim();
+                    if (key === 'type') entry.type = value;
+                    else if (key === 'description') entry.description = value;
+                    else if (key === 'address') entry.address = value;
+                    else if (key === 'in-depth') entry.inDepthDescription = value;
+                });
+                return entry;
+            });
+        }
+
+        const renderers = {
+            'jpg': (address) => `<img src="${address}" alt="Image">`,
+            'png': (address) => `<img src="${address}" alt="Image">`,
+            'mp4': (address) => `<video src="${address}" controls></video>`,
+            'pdf': (address) => `<iframe src="${address}"></iframe>`,
+            'stl': (address, index) => `<div id="stl-viewer-${index}" class="stl-viewer"></div>`
+        };
+
+        function getViewerHTML(type, address, index) {
+            const renderer = renderers[type.toLowerCase()];
+            return renderer ? renderer(address, index) : `<p>Unsupported file type: ${type}</p>`;
+        }
+    </script>
+</body>
+</html>
