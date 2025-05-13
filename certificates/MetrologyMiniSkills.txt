@@ -1,14 +1,14 @@
 type: JPG
 description: AFB Print with Bubbled dimensions
-address: pictures/lab504292025.jpg
+address: certificates/pictures/lab504292025.jpg
 in-depth: As part of the Metrology Mini Skills Certificate, I was taught the basics of programming to a number of dimensions, in this case, directly from a print with no supporting 3d file. This print is instantly recognizable if you are familiar with the artifact from Hexagon. In this case, we were directed to manually move the CMM to take points in as few “long moves” as possible. This meant reserving the AFB (Plane A, Cylinder F, Plane B) alignment until it was convenient to implement it in software. This is visible at the 43 second mark in the video below. Something to note on the print is that it doesn’t appear to adhere to the ASME standard for inch dimensions. Since the document is in inch, decimals with a leading 0 should be displayed as .492 or .394 for example. 
 ---
 type: MP4
 description: Lab 5 Video
-address: metrologyMiniSkills/lab5.mp4
+address: certificates/metrologyMiniSkills/lab5.mp4
 in-depth: One of the limitations of what we learned, and one of the questions I asked was how do we as the programmer decide the number of points to take on a given dimension with a given tolerance? The tightest tolerance on this print was Bubble 4, Datum F, at +/- .008”. The minimum number of points for the software to accurately guess a cylinder is 6, and the tolerance is semi wide open, yet it is a datum, so bumping up the number of points to 10 might be a good start. Then if a dimension that is based on that datum is close to being out of tolerance, take more points on both that feature and the datum to get a more accurate reading. This is also a limitation of the hardware we have at Fullerton College. I had taken the Calypso training at NTMA recently, and they used a scanning feature. Hexagon CMM’s are capable of doing the same but only with a special head. (“Scanning” could also mean using the laser scanner feature of a Romer arm. “Scanning” with a CMM takes many points along the desired line or profile or desired surface by "skimming" the part itself.)
 ---
 type: JPG
 description: Lab 5 Report
-address: pictures/lab5Report.JPG
+address: certificates/pictures/lab5Report.JPG
 in-depth: The Report pdf shows each labeled Bubble. The default tolerances were +/-.030 and +/-.015 for 2 place and 3 place decimals, respectively, and the special cases for Bubbles 4 and 8 were modified accordingly. 
