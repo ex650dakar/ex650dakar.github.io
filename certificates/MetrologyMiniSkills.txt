@@ -1,6 +1,6 @@
 type: JPG
 description: AFB Print with Bubbled dimensions
-address: /pictures/lab504292025.JPG
+address: /pictures/lab504292025.jpg
 in-depth: As part of the Metrology Mini Skills Certificate, I was taught the basics of programming to a number of dimensions, in this case, directly from a print with no supporting 3d file. This print is instantly recognizable if you are familiar with the artifact from Hexagon. In this case, we were directed to manually move the CMM to take points in as few “long moves” as possible. This meant reserving the AFB (Plane A, Cylinder F, Plane B) alignment until it was convenient to implement it in software. This is visible at the 43 second mark in the video below. Something to note on the print is that it doesn’t appear to adhere to the ASME standard for inch dimensions. Since the document is in inch, decimals with a leading 0 should be displayed as .492 or .394 for example. 
 ---
 type: MP4
@@ -10,5 +10,5 @@ in-depth: One of the limitations of what we learned, and one of the questions I 
 ---
 type: JPG
 description: Lab 5 Report
-address: /pictures/lab5Report.jpg
+address: /pictures/lab5Report.JPG
 in-depth: The Report pdf shows each labeled Bubble. The default tolerances were +/-.030 and +/-.015 for 2 place and 3 place decimals, respectively, and the special cases for Bubbles 4 and 8 were modified accordingly. 
